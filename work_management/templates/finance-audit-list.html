@@ -1,0 +1,192 @@
+{% extends 'admin-base.html' %}
+{% load static %}
+{% load base_tags %}
+{% block csslink %}
+<style>
+.table-wrapper {
+    overflow-y: scroll;
+    overflow-x: scroll;
+    height: fit-content;
+    max-height: 70vh;
+}
+
+table {
+    min-width: max-content;
+    border-collapse: separate;
+    border-spacing: 0px;
+}
+
+table th{
+    position: sticky;
+    top: 0px;
+    background-color: #2a2b2b;
+    color: rgb(255, 255, 255);
+}
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Finance</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Finance</li>
+                </ul>
+            </div>
+            <div class="col-auto float-right ml-auto">
+                <a href="#" class="btn add-btn"><i class="fa fa-plus"></i> Form</a>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    {% if messages %}
+        {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>{{message}}</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Search Filter -->
+    <div class="main-search">
+        <form method="get">
+            <div class="input-group">
+                <input type="text" name="keyword" class="form-control" placeholder="Search...">
+                <div class="input-group-append">
+                    <input class="btn btn-primary" type="submit" value="Search">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="search-result">
+        {% if keyword %}
+            <h6>Search Result Found For:<u> {{keyword}}</u></h6>
+        {% endif %}
+        <h6>{{result_cnt}} Results found | <a href="/work-management/finance-audit-list" class="text-primary">Clear Filter</a></h6>
+    </div>
+    <!-- /Search Filter -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-wrapper">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center">Client</th>
+                            <th style="text-align:center">Company</th>
+                            <th style="text-align:center">ROC</th>
+                            <th style="text-align:center">RORC</th>
+                            <th style="text-align:center">D.O.Incorp</th>
+                            <th style="text-align:center">YearEnd</th>
+                            <th style="text-align:center">AgmStart</th>
+                            <th style="text-align:center">AgmEnd</th>
+                            <th style="text-align:center">ARStart</th>
+                            <th style="text-align:center">AREnd</th>
+                            <th style="text-align:center">AISStart</th>
+                            <th style="text-align:center">AISEnd</th>
+                            <th style="text-align:center">FYRStart</th>
+                            <th style="text-align:center">FYRSEnd</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comp in companies %}
+                        <tr>
+                            <td style="text-align:center">
+                                <a href="#">{{comp.client.client_id}} - {{comp.client.client_name}}</a>
+                            </td>
+                            <td style="text-align:center">{{comp.company_id}} - {{comp.company_name}}</td>
+                            <td style="text-align:center">{{comp.roc}}</td>
+                            <td style="text-align:center">-</td>
+                            <td style="text-align:center" class="editable" contenteditable="true" id="{{comp.id}}_date">{{comp.company_review.date_of_incorp|null_handle}}</td>
+                            <td style="text-align:center" class="editable" contenteditable="true" id="{{comp.id}}_yearend">{{comp.company_review.finance_year_end|null_handle}}</td>
+                            {% finance_agmend comp as finance_tag %}
+                            <td style="text-align:center">{{finance_tag.0}}</td>
+                            <td style="text-align:center">{{finance_tag.1}}</td>
+                            <td style="text-align:center">{{finance_tag.2}}</td>
+                            <td style="text-align:center">{{finance_tag.3}}</td>
+                            <td style="text-align:center">{{finance_tag.4}}</td>
+                            <td style="text-align:center">{{finance_tag.5}}</td>
+                            <td style="text-align:center">{{finance_tag.6}}</td>
+                            <td style="text-align:center">{{finance_tag.7}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table> <br>
+
+                <div>
+                    {% if companies.has_other_pages %}
+                        <ul class="pagination">
+                            {% if companies.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{current_url}}page={{companies.previous_page_number}}">Previous</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                </li>
+                            {% endif %}
+
+
+                            {% for page in companies.paginator.page_range %}
+                                {% if companies.number == page %}
+                                    <li class="page-item active">
+                                        <a class="page-link" href="{{current_url}}page={{page}}">{{ page }}</a>
+                                    </li>
+                                {% elif page > companies.number|add:'-5' and page < companies.number|add:'5' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{current_url}}page={{page}}">{{ page }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if companies.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{current_url}}page={{companies.next_page_number}}">Next</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disable">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block jslink %}
+<script>
+    $('.editable').on('blur', function() {
+            var row = $(this).closest('td');
+            var cell_id = row[0].getAttribute('id');
+            var cell_value = row.text();
+
+            $.ajax({
+                type: 'GET',
+                url: `/work-management/finance-audit-edit`,
+                data: {"cellid": cell_id, "cellvalue": cell_value},
+                success: function(res){
+                        console.log(res);
+                        if (res.status != 'success'){
+                                row[0].value = cell_value;
+                            }
+                        },
+                    error: function(error) {
+                        row[0].value = cell_value;
+                        console.log(error)
+                }
+            });
+        });
+</script>
+{% endblock %}
