@@ -1,0 +1,42 @@
+{
+  "background_color": "#ffffff",
+  "description": "MyIndia Overseas Pte Ltd",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "MIO",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "mio",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "categories": [],
+  "screenshots": [],
+  "icons": [
+    {
+      "src": "/static/assets/img/mio.png",
+      "type": "image/png",
+      "sizes": "90x90",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/assets/img/mio.png",
+      "type": "image/png",
+      "sizes": "512x512"
+  }],
+  "android_icon": [
+    {
+      "src": "/static/assets/img/mio.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "splash_screen": [
+    {
+      "src": "/static/assets/img/mio.png",
+      "media":"(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+    }
+  ],
+
+
+  "shortcuts": []
+}

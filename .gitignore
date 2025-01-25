@@ -26,7 +26,6 @@ node_modules/
 
 # Compiled static files
 staticfiles/
-static/
 
 # Virtual environment
 venv/
